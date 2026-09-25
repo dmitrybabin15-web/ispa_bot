@@ -1,0 +1,13 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ispa_bot:latest
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/aiogram_app/data
+    environment:
+      DB_FILE: /aiogram_app/data/db.sqlite3

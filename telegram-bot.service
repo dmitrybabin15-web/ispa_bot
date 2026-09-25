@@ -1,0 +1,30 @@
+[Unit]
+Description=Telegram Bot Service (Webhook)
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=your_beget_user
+WorkingDirectory=%h/bot
+Environment="PATH=%h/bot/venv/bin"
+EnvironmentFile=%h/bot/.env
+ExecStart=%h/bot/venv/bin/gunicorn \
+    --worker-class aiohttp.GunicornWebWorker \
+    --bind 127.0.0.1:8000 \
+    --workers 1 \
+    --timeout 120 \
+    --access-logfile %h/bot/logs/access.log \
+    --error-logfile %h/bot/logs/error.log \
+    --log-level info \
+    main_webhook:create_app
+
+Restart=on-failure
+RestartSec=10s
+
+# Логирование
+StandardOutput=append:/home/your_beget_user/bot/logs/stdout.log
+StandardError=append:/home/your_beget_user/bot/logs/stderr.log
+
+[Install]
+WantedBy=multi-user.target
